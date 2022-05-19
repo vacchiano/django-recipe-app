@@ -1,0 +1,12 @@
+{% extends "recipes/base.html" %}
+<!-- -->
+{% block content %}
+<h1>Recipes:</h1>
+{% for recipe in recipes %}
+<h1>{{recipe.title}}</h1>
+<p>{{recipe.author}} | {{recipe.date_posted}}</p>
+<h5>{{recipe.content}}</h5>
+<hr />
+{% endfor %}
+<!-- -->
+{% endblock content %}
