@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from . import models
 
 recipes = [
   {
@@ -23,6 +24,7 @@ recipes = [
 
 # Create your views here.
 def home(request):
+  recipes = models.Recipe.objects.all()
   context = {
     'recipes': recipes
   }
