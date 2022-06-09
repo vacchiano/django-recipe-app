@@ -45,6 +45,19 @@
             </li>
           </ul>
         </div>
+        <div class="navbar-nav">
+          {% if user.is_authenticated %}
+          <a class="nav-item nav-link" href="{% url 'user-profile' %}"
+            >My Profile</a
+          >
+          <a class="nav-item nav-link" href="{% url 'user-logout' %}">Logout</a>
+          {% else %}
+          <a class="nav-item nav-link" href="{% url 'user-login' %}">Login</a>
+          <a class="nav-item nav-link" href="{% url 'user-register' %}"
+            >Register</a
+          >
+          {% endif %}
+        </div>
       </div>
     </nav>
     <div class="container mt-4 col-8">
