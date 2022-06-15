@@ -1,26 +1,14 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
 from . import models
 
-recipes = [
-  {
-    'author': 'Dom V.',
-    'title': 'Meatballs',
-    'description': 'Combine ingredients, form into balls, brown, then place in oven.',
-    'date_posted': 'May 18th, 2022'
-  },
-  {
-    'author': 'Gina R.',
-    'title': 'Chicken Cutlets',
-    'description': 'Bread chicken, cook on each side for 8 min',
-    'date_posted': 'May 18th, 2022'
-  },
-  {
-    'author': 'Bella O.',
-    'title': 'Sub',
-    'description': 'Combine ingredients.',
-    'date_posted': 'May 18th, 2022'
-  }
-]
+class RecipeListView(ListView):
+  model = models.Recipe
+  template_name = 'recipes/home.html'
+  context_object_name = 'recipes'
 
 # Create your views here.
 def home(request):
@@ -32,3 +20,35 @@ def home(request):
 
 def about(request):
   return render(request, 'recipes/about.html', {'title': 'about page'})
+
+
+class RecipeDetailView(DetailView):
+  model = models.Recipe
+
+class RecipeDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+  model = models.Recipe
+  success_url = reverse_lazy('recipes-home')
+
+  def test_func(self):
+    recipe = self.get_object()
+    return self.request.user == recipe.author
+
+class RecipeCreateView(LoginRequiredMixin, CreateView):
+  model = models.Recipe
+  fields = ['title', 'description']
+
+  def form_valid(self, form):
+    form.instance.author = self.request.user
+    return super().form_valid(form)
+
+class RecipeUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+  model = models.Recipe
+  fields = ['title', 'description']
+
+  def test_func(self):
+    recipe = self.get_object()
+    return self.request.user == recipe.author
+
+  def form_valid(self, form):
+    form.instance.author = self.request.user
+    return super().form_valid(form)
